@@ -72,26 +72,5 @@ class _PhotoDialogState extends State<PhotoDialog> {
         ],
       ),
     );
-    return SimpleDialog(
-      insetPadding: const EdgeInsets.all(20),
-      title: Row(
-        children: [
-
-        ],
-      ),
-      children: List.generate(photos.length, (i) {
-        return Stack(
-          children: [
-            SizedBox(
-
-              child: const Center(child: CircularProgressIndicator()),
-            ),
-            Image(
-              image: NetworkImage(photos[i]),
-            ),
-          ],
-        );
-      }),
-    );
   }
 }

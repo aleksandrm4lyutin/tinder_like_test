@@ -8,17 +8,17 @@ class DataService {
 
   Future<List<User>> loadData() async {
     /// fetch data of all photos
-    List<dynamic>? photosMap = await _getPhotos();
+    List<dynamic>? photosMap = await _getData(_photosUrl);
     if(photosMap == null) {
       throw Exception('Failed to load photos');
     }
     /// fetch data of all albums
-    List<dynamic>? albumsMap = await _getAlbums();
+    List<dynamic>? albumsMap = await _getData(_albumsUrl);
     if(albumsMap == null) {
       throw Exception('Failed to load albums');
     }
     /// fetch data of all users
-    List<dynamic>? usersMap = await _getUsers();
+    List<dynamic>? usersMap = await _getData(_usersUrl);
     if(usersMap == null) {
       throw Exception('Failed to load users');
     }
@@ -32,35 +32,13 @@ class DataService {
       //print(e);
       throw Exception('Failed to load data');
     }
-
-
   }
 
+  static const _photosUrl = 'https://jsonplaceholder.typicode.com/photos';
+  static const _albumsUrl = 'https://jsonplaceholder.typicode.com/albums';
+  static const _usersUrl = 'https://jsonplaceholder.typicode.com/users';
 
-  Future<List<dynamic>?> _getPhotos() async {
-    const url = 'https://jsonplaceholder.typicode.com/photos';
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      List<dynamic> list = jsonDecode(response.body) as List<dynamic>;
-      return list;
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<dynamic>?> _getAlbums() async {
-    const url = 'https://jsonplaceholder.typicode.com/albums';
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      List<dynamic> list = jsonDecode(response.body) as List<dynamic>;
-      return list;
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<dynamic>?> _getUsers() async {
-    const url = 'https://jsonplaceholder.typicode.com/users';
+  Future<List<dynamic>?> _getData(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List<dynamic> list = jsonDecode(response.body) as List<dynamic>;
