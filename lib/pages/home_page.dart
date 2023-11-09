@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:test_tinder_like_app/widgets/card.dart';
-import 'package:test_tinder_like_app/widgets/dialog.dart';
-import '../abstracts/class_user.dart';
+import 'package:test_tinder_like_app/pages/post_viewer.dart';
+import '../abstracts/class_post.dart';
+import '../widgets/post_card_short.dart';
+
 
 class HomePage extends StatefulWidget {
 
-  final Size size;
-  final List<User> users;
+  final List<Post> posts;
+  final Function() callback;
 
   const HomePage({super.key,
-    required this.users,
-    required this.size,
+    required this.posts,
+    required this.callback,
   });
 
   @override
@@ -20,76 +20,68 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
-  late List<User> users;
-  late final CarouselController controller = CarouselController();
-  int currentTab = 0;
+  late List<Post> posts;
+
+  void openPost(Post post) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PostViewer(
+        post: post,
+      )),
+    );
+  }
+
+  Future<void> refresh() async {
+    setState(() {
+      widget.callback();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    users = widget.users;
+    posts = widget.posts;
   }
-
-
-  void forward() {
-    controller.nextPage();
-  }
-
-  void back() {
-    controller.previousPage();
-  }
-
-  void open(User user) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => PhotoDialog(user: user),
-    );
-  }
-
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.grey,
+      body: Stack(
         children: [
-          /// CARDS
-          CarouselSlider(
-            disableGesture: true,
-            carouselController: controller,
-              items: List.generate(users.length, (i) {
-                return CarouselCard(
-                  openPictures: (index) {
-                    open(users[index]);
-                  },
-                  index: i,
-                  user: users[i],
-                  width: widget.size.width - 40,
-                );
-              }),
-              options: CarouselOptions(
-                scrollPhysics: const NeverScrollableScrollPhysics(),
-                height: widget.size.height - 100,
-                viewportFraction: 1,
-              )
+          Container(
+            decoration: BoxDecoration(
+                gradient: RadialGradient(
+                    radius: 1.5,
+                    colors: [
+                      Colors.black.withOpacity(0),
+                      Colors.black,
+                    ]
+                )
+            ),
           ),
-          /// BOTTOM CONTROL
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                onPressed: back,
-                icon: const Icon(Icons.arrow_back_ios_new, size: 40,),
-              ),
-              IconButton(
-                onPressed: forward,
-                icon: const Icon(Icons.arrow_forward_ios, size: 40,),
-              ),
-            ],
-          )
 
+          SafeArea(
+            child: RefreshIndicator(
+              displacement: 80,
+              backgroundColor: Colors.transparent,
+              color: Colors.white54,
+              onRefresh: refresh,
+              child: ListView.builder(
+                itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    return PostCardShort(
+                      post: posts[index],
+                      callback: () {
+                        openPost(posts[index]);
+                      },
+                    );
+                  }
+              ),
+            ),
+          ),
         ],
       ),
     );

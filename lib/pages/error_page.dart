@@ -14,28 +14,45 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red, fontSize: 20),
+      backgroundColor: Colors.grey,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                gradient: RadialGradient(
+                    radius: 1.5,
+                    colors: [
+                      Colors.black.withOpacity(0),
+                      Colors.black,
+                    ]
+                )
             ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                callback();
-              },
-              child: const Text(
-                'Try again',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-              ),
+          ),
+
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  error,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red, fontSize: 18),
+                ),
+                const SizedBox(height: 28),
+                TextButton(
+                  onPressed: () {
+                    callback();
+                  },
+                  child: const Text(
+                    'Try again',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 28, color: Colors.white54),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

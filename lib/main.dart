@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_tinder_like_app/pages/data_loader.dart';
 
-// Версия без bloc
 
 void main() {
   runApp(const MyApp());

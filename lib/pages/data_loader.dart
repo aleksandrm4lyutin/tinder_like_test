@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:test_tinder_like_app/pages/error_page.dart';
 import 'package:test_tinder_like_app/pages/home_page.dart';
 import 'package:test_tinder_like_app/pages/loading_page.dart';
-import '../abstracts/class_user.dart';
+import '../abstracts/class_post.dart';
 import '../functions/data_service.dart';
 
 
@@ -16,13 +16,13 @@ class DataLoader extends StatefulWidget {
 class _DataLoaderState extends State<DataLoader> {
 
   DataService dataService = DataService();
-  late Future<List<User>> future;
+  late Future<List<Post>?> future;
 
   @override
   void initState() {
     super.initState();
 
-    future = dataService.loadData();
+    future = dataService.getAllPosts();
   }
 
   @override
@@ -33,14 +33,18 @@ class _DataLoaderState extends State<DataLoader> {
         if(snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data != null) {
             return HomePage(
-              users: snapshot.data!,
-              size: MediaQuery.of(context).size,
+              callback: () {
+                setState(() {
+                  future = dataService.getAllPosts();
+                });
+              },
+              posts: snapshot.data!,
             );
           } else {
             return ErrorPage(
               callback: () {
                 setState(() {
-                  future = dataService.loadData();
+                  future = dataService.getAllPosts();
                 });
               },
               error: '${snapshot.error}',
